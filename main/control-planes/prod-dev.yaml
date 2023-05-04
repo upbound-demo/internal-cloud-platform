@@ -1,0 +1,8 @@
+apiVersion: mxp.upbound.io/v1alpha1
+kind: ControlPlane
+metadata:
+  name: prod-dev
+  labels:
+    platform: prod
+    api: dev
+spec: {}
