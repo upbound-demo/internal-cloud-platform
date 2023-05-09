@@ -3,7 +3,7 @@ kind: ControllerConfig
 metadata:
   name: irsa
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::000000000000:role/eks-test-role
+    eks.amazonaws.com/role-arn: arn:aws:iam::609897127049:role/icp-dev-control-plane
 spec: {}
 ---
 apiVersion: pkg.crossplane.io/v1
