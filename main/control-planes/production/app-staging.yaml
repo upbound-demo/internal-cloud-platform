@@ -1,0 +1,64 @@
+apiVersion: mxp.upbound.io/v1alpha1
+kind: ControlPlane
+metadata:
+  name: app-staging
+  labels:
+    system: prod
+    api: prod
+spec:
+  writeConnectionSecretToRef:
+    name: kubeconfig-app-staging
+    namespace: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-staging-providers
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./platform/system/prod/providers
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  kubeConfig:
+    secretRef:
+      name: kubeconfig-app-staging
+      key: kubeconfig
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-staging-providerconfigs
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: app-staging-providers
+  interval: 1m0s
+  path: ./platform/system/prod/providerconfigs
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  kubeConfig:
+    secretRef:
+      name: kubeconfig-app-staging
+      key: kubeconfig
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-staging-apis
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./platform/apis/prod
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  kubeConfig:
+    secretRef:
+      name: kubeconfig-app-staging
+      key: kubeconfig

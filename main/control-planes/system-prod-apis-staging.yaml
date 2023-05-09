@@ -1,63 +1,64 @@
 apiVersion: mxp.upbound.io/v1alpha1
 kind: ControlPlane
 metadata:
-  name: dev
+  name: prod-staging
   labels:
-    platform: dev
+    system: prod
+    api: staging
 spec:
   writeConnectionSecretToRef:
-    name: kubeconfig-dev
+    name: kubeconfig-prod-staging
     namespace: flux-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: platform-system-dev-providers
+  name: prod-staging-providers
   namespace: flux-system
 spec:
   interval: 1m0s
-  path: ./platform/system/dev/providers
+  path: ./platform/system/prod/providers
   prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
   kubeConfig:
     secretRef:
-      name: kubeconfig-dev
+      name: kubeconfig-prod-staging
       key: kubeconfig
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: platform-system-dev-providerconfigs
+  name: prod-staging-providerconfigs
   namespace: flux-system
 spec:
   dependsOn:
-  - name: platform-system-dev-providers
+  - name: prod-staging-providers
   interval: 1m0s
-  path: ./platform/system/dev/providerconfigs
+  path: ./platform/system/prod/providerconfigs
   prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
   kubeConfig:
     secretRef:
-      name: kubeconfig-dev
+      name: kubeconfig-prod-staging
       key: kubeconfig
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: platform-dev-apis-dev
+  name: prod-staging-apis
   namespace: flux-system
 spec:
   interval: 1m0s
-  path: ./platform/apis/dev
+  path: ./platform/apis/staging
   prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
   kubeConfig:
     secretRef:
-      name: kubeconfig-dev
+      name: kubeconfig-prod-staging
       key: kubeconfig
