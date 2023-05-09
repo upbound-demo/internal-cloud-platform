@@ -1,24 +1,35 @@
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: provider-aws
+  name: provider-aws-rds
 spec:
-  package: xpkg.upbound.io/upbound/provider-aws:v0.34.0
+  package: xpkg.upbound.io/upbound-release-candidates/provider-aws-rds:v0.35.0
   controllerConfigRef:
     name: irsa
 ---
-apiVersion: pkg.crossplane.io/v1alpha1
-kind: ControllerConfig
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
 metadata:
-  name: irsa
-  annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::000000000000:role/eks-test-role
-spec: {}
----
-apiVersion: aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: default
+  name: provider-aws-eks
 spec:
-  credentials:
-    source: IRSA
+  package: xpkg.upbound.io/upbound-release-candidates/provider-aws-eks:v0.35.0
+  controllerConfigRef:
+    name: irsa
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws-iam
+spec:
+  package: xpkg.upbound.io/upbound-release-candidates/provider-aws-iam:v0.35.0
+  controllerConfigRef:
+    name: irsa
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws-ec2
+spec:
+  package: xpkg.upbound.io/upbound-release-candidates/provider-aws-ec2:v0.35.0
+  controllerConfigRef:
+    name: irsa

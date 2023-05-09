@@ -8,3 +8,20 @@ spec:
   writeConnectionSecretToRef:
     name: kubeconfig-dev
     namespace: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: platform-dev
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  path: ./platform/dev
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  kubeConfig:
+    secretRef:
+      name: kubeconfig-dev
+      key: kubeconfig
