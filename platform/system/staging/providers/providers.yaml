@@ -1,11 +1,3 @@
-apiVersion: pkg.crossplane.io/v1alpha1
-kind: ControllerConfig
-metadata:
-  name: irsa
-  annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::000000000000:role/eks-test-role
-spec: {}
----
 apiVersion: pkg.crossplane.io/v1
 kind: Provider
 metadata:
