@@ -17,7 +17,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1m0s
-  path: ./platform/system/prod/providers
+  path: ./platform/system/production/providers
   prune: false
   sourceRef:
     kind: GitRepository
@@ -36,7 +36,7 @@ spec:
   dependsOn:
   - name: prod-staging-providers
   interval: 1m0s
-  path: ./platform/system/prod/providerconfigs
+  path: ./platform/system/production/providerconfigs
   prune: false
   sourceRef:
     kind: GitRepository
