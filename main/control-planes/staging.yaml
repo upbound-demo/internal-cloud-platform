@@ -4,4 +4,7 @@ metadata:
   name: staging
   labels:
     platform: staging
-spec: {}
+spec:
+  writeConnectionSecretToRef:
+    name: kubeconfig-staging
+    namespace: flux-system

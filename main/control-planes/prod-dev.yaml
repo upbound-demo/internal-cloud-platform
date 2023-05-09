@@ -5,4 +5,7 @@ metadata:
   labels:
     platform: prod
     api: dev
-spec: {}
+spec:
+  writeConnectionSecretToRef:
+    name: kubeconfig-prod-dev
+    namespace: flux-system

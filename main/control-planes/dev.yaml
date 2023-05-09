@@ -4,4 +4,7 @@ metadata:
   name: dev
   labels:
     platform: dev
-spec: {}
+spec:
+  writeConnectionSecretToRef:
+    name: kubeconfig-dev
+    namespace: flux-system
