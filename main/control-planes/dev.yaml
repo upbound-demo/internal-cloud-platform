@@ -12,11 +12,30 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: platform-dev
+  name: platform-dev-providers
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./platform/dev
+  path: ./platform/dev/providers
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  kubeConfig:
+    secretRef:
+      name: kubeconfig-dev
+      key: kubeconfig
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: platform-dev-providerconfigs
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: platform-dev-providers
+  interval: 10m0s
+  path: ./platform/dev/providerconfigs
   prune: false
   sourceRef:
     kind: GitRepository
