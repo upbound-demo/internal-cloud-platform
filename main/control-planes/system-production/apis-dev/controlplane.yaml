@@ -98,4 +98,3 @@ spec:
     policyArn: arn:aws:iam::aws:policy/AdministratorAccess
     roleRef:
       name: icp-prod-apis-dev-control-plane
-

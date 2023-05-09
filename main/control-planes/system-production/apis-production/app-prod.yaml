@@ -62,3 +62,56 @@ spec:
     secretRef:
       name: kubeconfig-app-prod
       key: kubeconfig
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-dev-apis
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./platform/apis/production
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  kubeConfig:
+    secretRef:
+      name: kubeconfig-app-dev
+      key: kubeconfig
+---
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: Role
+metadata:
+  name: icp-app-prod-control-plane
+spec:
+  forProvider:
+    assumeRolePolicy: |-
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "arn:aws:iam::609897127049:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/755AE752658C7A29E3A092AEB155B06C"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringLike": {
+                "oidc.eks.us-east-1.amazonaws.com/id/755AE752658C7A29E3A092AEB155B06C:aud": "sts.amazonaws.com",
+                "oidc.eks.us-east-1.amazonaws.com/id/755AE752658C7A29E3A092AEB155B06C:sub": "system:serviceaccount:crossplan-system:provider-aws-*"
+              }
+            }
+          }
+        ]
+      }
+---
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: RolePolicyAttachment
+metadata:
+  name: icp-app-prod-control-plane
+spec:
+  forProvider:
+    policyArn: arn:aws:iam::aws:policy/AdministratorAccess
+    roleRef:
+      name: icp-app-prod-control-plane
