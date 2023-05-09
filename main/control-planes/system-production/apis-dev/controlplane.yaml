@@ -30,13 +30,13 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: prod-dev-providerconfigs
+  name: prod-dev-runtime
   namespace: flux-system
 spec:
   dependsOn:
   - name: prod-dev-providers
   interval: 1m0s
-  path: ./platform/system/production/providerconfigs
+  path: ./runtime/production/apis-dev
   prune: false
   sourceRef:
     kind: GitRepository
