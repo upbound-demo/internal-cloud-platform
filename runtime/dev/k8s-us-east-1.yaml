@@ -1,11 +1,11 @@
-apiVersion: k8s.starter.org/v1alpha1
-kind: KubernetesCluster
-metadata:
-  name: icp-demo-muvaf
-  namespace: default
-spec:
-  nodes:
-    count: 3
-    size: small
-  writeConnectionSecretToRef:
-    name: kubeconfig-icp-demo-muvaf
+# apiVersion: k8s.starter.org/v1alpha1
+# kind: KubernetesCluster
+# metadata:
+#   name: icp-demo-muvaf
+#   namespace: default
+# spec:
+#   nodes:
+#     count: 3
+#     size: small
+#   writeConnectionSecretToRef:
+#     name: kubeconfig-icp-demo-muvaf
