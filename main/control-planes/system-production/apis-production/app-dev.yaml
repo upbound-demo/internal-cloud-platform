@@ -82,7 +82,7 @@ spec:
             "Condition": {
               "StringLike": {
                 "oidc.eks.us-east-1.amazonaws.com/id/755AE752658C7A29E3A092AEB155B06C:aud": "sts.amazonaws.com",
-                "oidc.eks.us-east-1.amazonaws.com/id/755AE752658C7A29E3A092AEB155B06C:sub": "system:serviceaccount:crossplan-system:provider-aws-*"
+                "oidc.eks.us-east-1.amazonaws.com/id/755AE752658C7A29E3A092AEB155B06C:sub": "system:serviceaccount:mcp-*-system:provider-aws-*"
               }
             }
           }
