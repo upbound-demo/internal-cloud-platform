@@ -49,9 +49,9 @@ spec:
       name: controlplaneRole
       patches:
         - type: PatchSet
-          patchSetName: network-name-label
+          patchSetName: cluster-name-label
         - type: PatchSet
-          patchSetName: network-name-tag
+          patchSetName: cluster-name-tag
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
@@ -65,7 +65,7 @@ spec:
       name: clusterRolePolicyAttachment
       patches:
         - type: PatchSet
-          patchSetName: network-name-label
+          patchSetName: cluster-name-label
     - base:
         apiVersion: eks.aws.upbound.io/v1beta1
         kind: Cluster
@@ -83,9 +83,9 @@ spec:
       name: kubernetesCluster
       patches:
         - type: PatchSet
-          patchSetName: network-name-label
+          patchSetName: cluster-name-label
         - type: PatchSet
-          patchSetName: network-name-tag
+          patchSetName: cluster-name-tag
         - fromFieldPath: spec.securityGroupIds
           toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds
         - fromFieldPath: spec.subnetIds
@@ -106,7 +106,7 @@ spec:
       name: kubernetesClusterAuth
       patches:
         - type: PatchSet
-          patchSetName: network-name-label
+          patchSetName: cluster-name-label
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
         - fromFieldPath: metadata.uid
@@ -169,9 +169,9 @@ spec:
       name: nodegroupRole
       patches:
         - type: PatchSet
-          patchSetName: network-name-label
+          patchSetName: cluster-name-label
         - type: PatchSet
-          patchSetName: network-name-tag
+          patchSetName: cluster-name-tag
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
@@ -185,7 +185,7 @@ spec:
       name: workerNodeRolePolicyAttachment
       patches:
         - type: PatchSet
-          patchSetName: network-name-label
+          patchSetName: cluster-name-label
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
@@ -199,7 +199,7 @@ spec:
       name: cniRolePolicyAttachment
       patches:
         - type: PatchSet
-          patchSetName: network-name-label
+          patchSetName: cluster-name-label
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
@@ -213,7 +213,7 @@ spec:
       name: containerRegistryRolePolicyAttachment
       patches:
         - type: PatchSet
-          patchSetName: network-name-label
+          patchSetName: cluster-name-label
     - base:
         apiVersion: eks.aws.upbound.io/v1beta1
         kind: NodeGroup
@@ -238,9 +238,9 @@ spec:
       name: nodeGroupPublic
       patches:
         - type: PatchSet
-          patchSetName: network-name-label
+          patchSetName: cluster-name-label
         - type: PatchSet
-          patchSetName: network-name-tag
+          patchSetName: cluster-name-tag
         - fromFieldPath: spec.nodes.count
           toFieldPath: spec.forProvider.scalingConfig[0].desiredSize
         - fromFieldPath: spec.nodes.size
@@ -265,9 +265,9 @@ spec:
       name: oidcProvider
       patches:
         - type: PatchSet
-          patchSetName: network-name-label
+          patchSetName: cluster-name-label
         - type: PatchSet
-          patchSetName: network-name-tag
+          patchSetName: cluster-name-tag
         - fromFieldPath: status.oidc.issuer
           toFieldPath: spec.forProvider.url
           policy:
