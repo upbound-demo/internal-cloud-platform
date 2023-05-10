@@ -60,7 +60,8 @@ spec:
           toFieldPath: spec.parameters.securityGroupIds
           policy:
             fromFieldPath: Required
-    - base:
+    - name: mcpConnectorRelease
+      base:
         apiVersion: helm.crossplane.io/v1beta1
         kind: Release
         spec:
