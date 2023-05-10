@@ -68,7 +68,7 @@ spec:
             chart:
               name: mcp-connector
               repository: https://charts.upbound.io/beta
-              version: 0.3.1
+              version: 0.3.2
             namespace: kube-system
             values:
               mcp:
@@ -77,6 +77,7 @@ spec:
                 name: controlplane-name
                 namespace: namespace-in-controlplane
                 token: token-to-access-controlplane
+                insecureSkipTLSVerify: true
       patches:
         - fromFieldPath: metadata.name
           toFieldPath: metadata.annotations[crossplane.io/external-name]
