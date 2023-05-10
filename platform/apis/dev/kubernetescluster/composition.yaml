@@ -16,6 +16,7 @@ spec:
       base:
         apiVersion: net.starter.org/v1alpha1
         kind: XNetwork
+        spec: {}
       patches:
         - fromFieldPath: metadata.name
           toFieldPath: metadata.annotations[crossplane.io/external-name]
