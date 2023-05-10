@@ -118,6 +118,30 @@ spec:
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
     - base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: ProviderConfig
+        spec:
+          credentials:
+            source: Secret
+            secretRef:
+              key: kubeconfig
+      name: providerConfig
+      patches:
+        - fromFieldPath: metadata.annotations[crossplane.io/external-name]
+          toFieldPath: metadata.name
+        - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+          toFieldPath: spec.credentials.secretRef.namespace
+        # This ProviderConfig uses the above EKS cluster's connection secret as
+        # its credentials secret.
+        - fromFieldPath: metadata.uid
+          toFieldPath: spec.credentials.secretRef.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-ekscluster"
+      readinessChecks:
+        - type: None
+    - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: Role
         metadata:

@@ -38,8 +38,6 @@ spec:
         - fromConnectionSecretKey: kubeconfig
       patches:
         - fromFieldPath: metadata.name
-          toFieldPath: spec.id
-        - fromFieldPath: metadata.name
           toFieldPath: metadata.annotations[crossplane.io/external-name]
         - fromFieldPath: metadata.uid
           toFieldPath: spec.writeConnectionSecretToRef.name
@@ -82,6 +80,8 @@ spec:
       patches:
         - fromFieldPath: metadata.name
           toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.providerConfigRef.name
         - type: FromCompositeFieldPath
           fromFieldPath: metadata.name
           toFieldPath: spec.forProvider.values.mcp.namespace
