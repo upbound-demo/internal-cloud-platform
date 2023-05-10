@@ -9,6 +9,17 @@ spec:
   compositeTypeRef:
     apiVersion: aws.k8s.starter.org/v1alpha1
     kind: XEKS
+  patchSets:
+  - name: cluster-name-label
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.annotations[crossplane.io/external-name]
+      toFieldPath: metadata.labels[aws.k8s.starter.org/cluster-name]
+  - name: cluster-name-tag
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.annotations[crossplane.io/external-name]
+      toFieldPath: spec.forProvider.tags.cluster-name
   resources:
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
@@ -36,6 +47,11 @@ spec:
                 ]
               }
       name: controlplaneRole
+      patches:
+        - type: PatchSet
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
@@ -47,6 +63,9 @@ spec:
               matchLabels:
                 role: controlplane
       name: clusterRolePolicyAttachment
+      patches:
+        - type: PatchSet
+          patchSetName: network-name-label
     - base:
         apiVersion: eks.aws.upbound.io/v1beta1
         kind: Cluster
@@ -63,14 +82,17 @@ spec:
             version: "1.23"
       name: kubernetesCluster
       patches:
-          # Change to spec id
-        - fromFieldPath: spec.parameters.securityGroupIds
+        - type: PatchSet
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
+        - fromFieldPath: spec.securityGroupIds
           toFieldPath: spec.forProvider.vpcConfig[0].securityGroupIds
-        - fromFieldPath: spec.parameters.subnetIds
+        - fromFieldPath: spec.subnetIds
           toFieldPath: spec.forProvider.vpcConfig[0].subnetIds
         - type: ToCompositeFieldPath
           fromFieldPath: status.atProvider.identity[0].oidc[0].issuer
-          toFieldPath: status.eks.oidc
+          toFieldPath: status.oidc.issuer
           policy:
             fromFieldPath: Optional
     - base:
@@ -83,6 +105,8 @@ spec:
               matchControllerRef: true
       name: kubernetesClusterAuth
       patches:
+        - type: PatchSet
+          patchSetName: network-name-label
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
         - fromFieldPath: metadata.uid
@@ -119,6 +143,11 @@ spec:
                 ]
               }
       name: nodegroupRole
+      patches:
+        - type: PatchSet
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
@@ -130,6 +159,9 @@ spec:
               matchLabels:
                 role: nodegroup
       name: workerNodeRolePolicyAttachment
+      patches:
+        - type: PatchSet
+          patchSetName: network-name-label
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
@@ -141,6 +173,9 @@ spec:
               matchLabels:
                 role: nodegroup
       name: cniRolePolicyAttachment
+      patches:
+        - type: PatchSet
+          patchSetName: network-name-label
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: RolePolicyAttachment
@@ -152,6 +187,9 @@ spec:
               matchLabels:
                 role: nodegroup
       name: containerRegistryRolePolicyAttachment
+      patches:
+        - type: PatchSet
+          patchSetName: network-name-label
     - base:
         apiVersion: eks.aws.upbound.io/v1beta1
         kind: NodeGroup
@@ -175,9 +213,13 @@ spec:
               - t3.medium
       name: nodeGroupPublic
       patches:
-        - fromFieldPath: spec.parameters.nodes.count
+        - type: PatchSet
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
+        - fromFieldPath: spec.nodes.count
           toFieldPath: spec.forProvider.scalingConfig[0].desiredSize
-        - fromFieldPath: spec.parameters.nodes.size
+        - fromFieldPath: spec.nodes.size
           toFieldPath: spec.forProvider.instanceTypes[0]
           transforms:
             - type: map
@@ -185,8 +227,8 @@ spec:
                 small: t3.small
                 medium: t3.medium
                 large: t3.large
-        - fromFieldPath: spec.id
-          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[aws.net.starter.org/network-id]
+        - fromFieldPath: metadata.annotations[crossplane.io/external-name]
+          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[aws.net.starter.org/network-name]
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
         kind: OpenIDConnectProvider
@@ -198,7 +240,11 @@ spec:
               - "9e99a48a9960b14926bb7f3b02e22da2b0ab7280"
       name: oidcProvider
       patches:
-        - fromFieldPath: status.eks.oidc
+        - type: PatchSet
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
+        - fromFieldPath: status.oidc.issuer
           toFieldPath: spec.forProvider.url
           policy:
             fromFieldPath: Required

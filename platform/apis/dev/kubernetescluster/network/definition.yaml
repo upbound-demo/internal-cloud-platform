@@ -17,12 +17,6 @@ spec:
           properties:
             spec:
               type: object
-              properties:
-                id:
-                  type: string
-                  description: ID of this Network that other objects will use to refer to it.
-              required:
-                - id
             status:
               type: object
               properties:

@@ -10,11 +10,16 @@ spec:
     apiVersion: net.starter.org/v1alpha1
     kind: XNetwork
   patchSets:
-  - name: network-id
+  - name: network-name-label
     patches:
     - type: FromCompositeFieldPath
-      fromFieldPath: spec.id
-      toFieldPath: metadata.labels[aws.net.starter.org/network-id]
+      fromFieldPath: metadata.annotations[crossplane.io/external-name]
+      toFieldPath: metadata.labels[aws.net.starter.org/network-name]
+  - name: network-name-tag
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.annotations[crossplane.io/external-name]
+      toFieldPath: spec.forProvider.tags.network-name
   resources:
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -31,7 +36,9 @@ spec:
       name: platform-vcp
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: InternetGateway
@@ -43,7 +50,9 @@ spec:
       name: gateway
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Subnet
@@ -64,7 +73,9 @@ spec:
       name: subnet-public-west-2a
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.subnetIds[0]
@@ -88,7 +99,9 @@ spec:
       name: subnet-public-west-2b
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.subnetIds[1]
@@ -111,7 +124,9 @@ spec:
       name: subnet-private-west-2a
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.subnetIds[2]
@@ -134,7 +149,9 @@ spec:
       name: subnet-private-west-2b
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.subnetIds[3]
@@ -149,7 +166,9 @@ spec:
       name: routeTable
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: Route
@@ -164,7 +183,9 @@ spec:
       name: route
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: MainRouteTableAssociation
@@ -178,7 +199,9 @@ spec:
       name: mainRouteTableAssociation
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTableAssociation
@@ -195,7 +218,9 @@ spec:
       name: RouteTableAssociation-public-a
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTableAssociation
@@ -212,7 +237,9 @@ spec:
       name: RouteTableAssociation-public-b
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTableAssociation
@@ -229,7 +256,9 @@ spec:
       name: RouteTableAssociation-private-a
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
         kind: RouteTableAssociation
@@ -246,7 +275,9 @@ spec:
       name: RouteTableAssociation-private-b
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - name: securityGroup
       base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -260,7 +291,9 @@ spec:
             description: Allow access to databases
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.securityGroupIds[0]
@@ -282,7 +315,9 @@ spec:
             description: Everywhere
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag
     - name: securityGroupRuleMysql
       base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -301,4 +336,6 @@ spec:
             description: Everywhere
       patches:
         - type: PatchSet
-          patchSetName: network-id
+          patchSetName: network-name-label
+        - type: PatchSet
+          patchSetName: network-name-tag

@@ -7,13 +7,18 @@ spec:
   compositeTypeRef:
     apiVersion: k8s.starter.org/v1alpha1
     kind: XKubernetesCluster
+  environment:
+    environmentConfigs:
+      - ref:
+          name: controlplane
   resources:
-    - base:
+    - name: compositeNetworkEKS
+      base:
         apiVersion: net.starter.org/v1alpha1
         kind: XNetwork
       patches:
-        - fromFieldPath: spec.id
-          toFieldPath: spec.id
+        - fromFieldPath: metadata.name
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
         - type: ToCompositeFieldPath
           fromFieldPath: status.subnetIds
           toFieldPath: status.subnetIds
@@ -24,17 +29,16 @@ spec:
           toFieldPath: status.securityGroupIds
           policy:
             fromFieldPath: Required
-      name: compositeNetworkEKS
-    - base:
+    - name: compositeClusterEKS
+      base:
         apiVersion: aws.k8s.starter.org/v1alpha1
         kind: XEKS
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
-      name: compositeClusterEKS
       patches:
-        - fromFieldPath: spec.id
+        - fromFieldPath: metadata.name
           toFieldPath: spec.id
-        - fromFieldPath: spec.id
+        - fromFieldPath: metadata.name
           toFieldPath: metadata.annotations[crossplane.io/external-name]
         - fromFieldPath: metadata.uid
           toFieldPath: spec.writeConnectionSecretToRef.name
@@ -54,5 +58,51 @@ spec:
             fromFieldPath: Required
         - fromFieldPath: status.securityGroupIds
           toFieldPath: spec.parameters.securityGroupIds
+          policy:
+            fromFieldPath: Required
+    - base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        spec:
+          forProvider:
+            chart:
+              name: mcp-connector
+              repository: https://charts.upbound.io/beta
+              version: 0.3.1
+            namespace: kube-system
+            values:
+              mcp:
+                host: proxy.myicp.cloud
+                account: org-name
+                name: controlplane-name
+                namespace: namespace-in-controlplane
+                token: token-to-access-controlplane
+      patches:
+        - fromFieldPath: metadata.name
+          toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - type: FromCompositeFieldPath
+          fromFieldPath: metadata.name
+          toFieldPath: spec.forProvider.values.mcp.namespace
+          policy:
+            fromFieldPath: Required
+        # Control-plane specific.
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: controlPlane.hostName
+          toFieldPath: spec.forProvider.values.mcp.host
+          policy:
+            fromFieldPath: Required
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: account.name
+          toFieldPath: spec.forProvider.values.mcp.account
+          policy:
+            fromFieldPath: Required
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: controlPlane.name
+          toFieldPath: spec.forProvider.values.mcp.name
+          policy:
+            fromFieldPath: Required
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: controlPlane.token
+          toFieldPath: spec.forProvider.values.mcp.token
           policy:
             fromFieldPath: Required

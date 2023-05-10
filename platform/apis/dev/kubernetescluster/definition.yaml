@@ -22,51 +22,25 @@ spec:
         properties:
           spec:
             type: object
+            description: Cluster configuration parameters.
             properties:
-              id:
-                type: string
-                description: ID of this Cluster that other objects will use to refer to it.
-              parameters:
+              nodes:
                 type: object
-                description: Cluster configuration parameters.
+                description: Cluster node configuration parameters.
                 properties:
-                  nodes:
-                    type: object
-                    description: Cluster node configuration parameters.
-                    properties:
-                      count:
-                        type: integer
-                        description: Desired node count, from 1 to 100.
-                      size:
-                        type: string
-                        description: Size of node.
-                        enum:
-                        - small
-                        - medium
-                        - large
-                    required:
-                    - count
-                    - size
-                  services:
-                    type: object
-                    description: Services configuration parameters.
-                    properties:
-                      operators:
-                        type: object
-                        description: Configuration for operators.
-                        properties:
-                          prometheus:
-                            type: object
-                            description: Configuration for the Prometheus operator.
-                            properties:
-                              version:
-                                type: string
-                                description: Prometheus operator version to run.
+                  count:
+                    type: integer
+                    description: Desired node count, from 1 to 100.
+                  size:
+                    type: string
+                    description: Size of node.
+                    enum:
+                    - small
+                    - medium
+                    - large
                 required:
-                - nodes
-            required:
-            - id
-            - parameters
+                - count
+                - size
           status:
             type: object
             properties:
