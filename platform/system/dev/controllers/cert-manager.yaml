@@ -1,0 +1,13 @@
+apiVersion: helm.crossplane.io/v1beta1
+kind: Release
+metadata:
+  name: cert-manager
+spec:
+  forProvider:
+    chart:
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.11.0
+    namespace: cert-manager
+  providerConfigRef:
+    name: helm-incontrolplane
