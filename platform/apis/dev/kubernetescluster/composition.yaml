@@ -1,25 +1,53 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: xkubernetesclusters.k8s.starter.org
+  name: xkubernetesclusters.demo.upbound.io
 spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
-    apiVersion: k8s.starter.org/v1alpha1
+    apiVersion: demo.upbound.io/v1alpha1
     kind: XKubernetesCluster
   environment:
     environmentConfigs:
       - ref:
           name: controlplane
+  patchSets:
+  # If triggered by claim, uses name and namespace. If composite,
+  # uses only the name. Useful for selection.
+  - name: identifiers
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.name
+      toFieldPath: metadata.labels[demo.upbound.io/root-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.claimRef.name
+      toFieldPath: metadata.labels[demo.upbound.io/root-name]
+      policy:
+        fromFieldPath: Optional
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.claimRef.namespace
+      toFieldPath: metadata.labels[demo.upbound.io/root-namespace]
+      policy:
+        fromFieldPath: Optional
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.labels[demo.upbound.io/root-name]
+      toFieldPath: metadata.labels[demo.upbound.io/root-name]
+      policy:
+        fromFieldPath: Optional
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.labels[demo.upbound.io/root-namespace]
+      toFieldPath: metadata.labels[demo.upbound.io/root-namespace]
+      policy:
+        fromFieldPath: Optional
   resources:
     - name: compositeNetworkEKS
       base:
-        apiVersion: net.starter.org/v1alpha1
+        apiVersion: demo.upbound.io/v1alpha1
         kind: XNetwork
         spec: {}
       patches:
-        - fromFieldPath: metadata.name
-          toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - type: PatchSet
+          patchSetName: identifiers
         - type: ToCompositeFieldPath
           fromFieldPath: status.subnetIds
           toFieldPath: status.subnetIds
@@ -32,13 +60,13 @@ spec:
             fromFieldPath: Required
     - name: compositeClusterEKS
       base:
-        apiVersion: aws.k8s.starter.org/v1alpha1
+        apiVersion: demo.upbound.io/v1alpha1
         kind: XEKS
       connectionDetails:
         - fromConnectionSecretKey: kubeconfig
       patches:
-        - fromFieldPath: metadata.name
-          toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - type: PatchSet
+          patchSetName: identifiers
         - fromFieldPath: metadata.uid
           toFieldPath: spec.writeConnectionSecretToRef.name
           transforms:
@@ -79,8 +107,8 @@ spec:
                 token: token-to-access-controlplane
                 insecureSkipTLSVerify: true
       patches:
-        - fromFieldPath: metadata.name
-          toFieldPath: metadata.annotations[crossplane.io/external-name]
+        - type: PatchSet
+          patchSetName: identifiers
         - fromFieldPath: metadata.name
           toFieldPath: spec.providerConfigRef.name
         - type: FromCompositeFieldPath

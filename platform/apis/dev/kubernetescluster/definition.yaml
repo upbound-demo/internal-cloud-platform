@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xkubernetesclusters.k8s.starter.org
+  name: xkubernetesclusters.demo.upbound.io
 spec:
-  group: k8s.starter.org
+  group: demo.upbound.io
   names:
     kind: XKubernetesCluster
     plural: xkubernetesclusters

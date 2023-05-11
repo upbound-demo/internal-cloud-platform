@@ -1,24 +1,41 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: xnetworks.aws.net.starter.org
+  name: xnetworks.demo.upbound.io
   labels:
     provider: aws
 spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
-    apiVersion: net.starter.org/v1alpha1
+    apiVersion: demo.upbound.io/v1alpha1
     kind: XNetwork
   patchSets:
+  # If triggered by claim, uses name and namespace. If composite,
+  # uses only the name. Useful for selection.
+  - name: identifiers
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.name
+      toFieldPath: metadata.labels[demo.upbound.io/root-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.labels[demo.upbound.io/root-name]
+      toFieldPath: metadata.labels[demo.upbound.io/root-name]
+      policy:
+        fromFieldPath: Optional
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.labels[demo.upbound.io/root-namespace]
+      toFieldPath: metadata.labels[demo.upbound.io/root-namespace]
+      policy:
+        fromFieldPath: Optional
   - name: network-name-label
     patches:
     - type: FromCompositeFieldPath
-      fromFieldPath: metadata.annotations[crossplane.io/external-name]
-      toFieldPath: metadata.labels[aws.net.starter.org/network-name]
+      fromFieldPath: metadata.labels[demo.upbound.io/network-name]
+      toFieldPath: metadata.labels[demo.upbound.io/network-name]
   - name: network-name-tag
     patches:
     - type: FromCompositeFieldPath
-      fromFieldPath: metadata.annotations[crossplane.io/external-name]
+      fromFieldPath: metadata.labels[demo.upbound.io/network-name]
       toFieldPath: spec.forProvider.tags.network-name
   resources:
     - base:
