@@ -33,10 +33,3 @@ spec:
   package: xpkg.upbound.io/upbound-release-candidates/provider-aws-ec2:v0.35.0
   controllerConfigRef:
     name: irsa
----
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: provider-helm
-spec:
-  package: xpkg.upbound.io/crossplane-contrib/provider-helm:v0.14.0
