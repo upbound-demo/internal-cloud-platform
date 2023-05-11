@@ -1,7 +1,7 @@
 apiVersion: helm.crossplane.io/v1beta1
 kind: Release
 metadata:
-  name: wordpress-example
+  name: cert-manager
 spec:
   forProvider:
     chart:
