@@ -13,6 +13,8 @@ metadata:
   name: helm-incontrolplane
 spec:
   serviceAccountName: helm-incontrolplane
+  args:
+  - --debug
 ---
 apiVersion: helm.crossplane.io/v1beta1
 kind: ProviderConfig
