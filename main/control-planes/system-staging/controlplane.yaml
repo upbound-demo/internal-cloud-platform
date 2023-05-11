@@ -33,7 +33,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-  - name: staging-providers
+  - name: staging-system
   interval: 1m0s
   path: ./runtime/staging
   prune: false

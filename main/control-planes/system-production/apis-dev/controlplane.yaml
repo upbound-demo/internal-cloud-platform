@@ -34,7 +34,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-  - name: prod-dev-providers
+  - name: prod-dev-system
   interval: 1m0s
   path: ./runtime/production/apis-dev
   prune: false

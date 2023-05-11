@@ -34,7 +34,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-  - name: prod-staging-providers
+  - name: prod-staging-system
   interval: 1m0s
   path: ./runtime/production/apis-staging
   prune: false

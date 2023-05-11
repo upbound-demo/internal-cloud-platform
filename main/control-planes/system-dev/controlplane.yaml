@@ -33,7 +33,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-  - name: dev-providers
+  - name: dev-system
   interval: 1m0s
   path: ./runtime/dev
   prune: false
