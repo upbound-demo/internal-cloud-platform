@@ -64,16 +64,20 @@ spec:
             dbSubnetGroupNameSelector:
               matchControllerRef: true
             instanceClass: db.t3.micro
-            username: masteruser
             skipFinalSnapshot: true
             publiclyAccessible: false
-            dbName: upbound # create custom database within the instance by default
+            username: masteruser
+            autoGeneratePassword: true
+            passwordSecretRef:
+              key: password
+              name: example-dbinstance
+              namespace: upbound-system
           deletionPolicy: Delete
       patches:
         - type: PatchSet
           patchSetName: identifiers
-        - fromFieldPath: "metadata.uid"
-          toFieldPath: "spec.writeConnectionSecretToRef.name"
+        - fromFieldPath: metadata.uid
+          toFieldPath: spec.writeConnectionSecretToRef.name
           transforms:
             - type: string
               string:
@@ -96,6 +100,10 @@ spec:
           toFieldPath: spec.forProvider.passwordSecretRef.name
         - fromFieldPath: spec.passwordSecretRef.key
           toFieldPath: spec.forProvider.passwordSecretRef.key
+        - fromFieldPath: spec.initialDBName
+          toFieldPath: spec.forProvider.dbName
+          policy:
+            fromFieldPath: Optional
       connectionDetails:
         - fromFieldPath: "status.atProvider.endpoint"
           name: endpoint
