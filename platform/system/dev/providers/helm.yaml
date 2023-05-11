@@ -29,7 +29,7 @@ metadata:
   namespace: upbound-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
   name: helm-incontrolplane
 subjects:
@@ -37,6 +37,6 @@ subjects:
     name: helm-incontrolplane
     namespace: upbound-system
 roleRef:
-  kind: ClusterRole
-  name: cluster-admin
+  kind: Role
+  name: provider-install
   apiGroup: rbac.authorization.k8s.io

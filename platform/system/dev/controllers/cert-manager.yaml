@@ -8,6 +8,6 @@ spec:
       name: cert-manager
       repository: https://charts.jetstack.io
       version: 1.11.0
-    namespace: cert-manager
+    namespace: upbound-system
   providerConfigRef:
     name: helm-incontrolplane
