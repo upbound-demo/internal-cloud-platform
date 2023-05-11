@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xsqlinstances.sql.demo.upbound.io
+  name: xsqlinstances.demo.upbound.io
 spec:
   claimNames:
     kind: SQLInstance
@@ -11,7 +11,7 @@ spec:
     - password
     - endpoint
     - host
-  group: sql.demo.upbound.io
+  group: demo.upbound.io
   names:
     kind: XSQLInstance
     plural: xsqlinstances
