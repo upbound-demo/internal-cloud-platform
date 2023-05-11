@@ -26,7 +26,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: helm-incontrolplane
-  namespace: crossplane-system
+  namespace: upbound-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -35,7 +35,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: helm-incontrolplane
-    namespace: crossplane-system
+    namespace: upbound-system
 roleRef:
   kind: ClusterRole
   name: cluster-admin
