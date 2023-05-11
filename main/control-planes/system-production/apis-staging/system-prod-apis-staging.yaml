@@ -13,11 +13,11 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: prod-staging-providers
+  name: prod-staging-system
   namespace: flux-system
 spec:
   interval: 1m0s
-  path: ./platform/system/production/providers
+  path: ./platform/system/production
   prune: false
   sourceRef:
     kind: GitRepository
