@@ -7,8 +7,36 @@ metadata:
 spec:
   writeConnectionSecretsToNamespace: upbound-system
   compositeTypeRef:
-    apiVersion: aws.platformref.upbound.io/v1alpha1
+    apiVersion: demo.upbound.io/v1alpha1
     kind: XSQLInstance
+  patchSets:
+  # If triggered by claim, uses name and namespace. If composite,
+  # uses only the name. Useful for selection.
+  - name: identifiers
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.name
+      toFieldPath: metadata.labels[demo.upbound.io/root-name]
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.claimRef.name
+      toFieldPath: metadata.labels[demo.upbound.io/root-name]
+      policy:
+        fromFieldPath: Optional
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.claimRef.namespace
+      toFieldPath: metadata.labels[demo.upbound.io/root-namespace]
+      policy:
+        fromFieldPath: Optional
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.labels[demo.upbound.io/root-name]
+      toFieldPath: metadata.labels[demo.upbound.io/root-name]
+      policy:
+        fromFieldPath: Optional
+    - type: FromCompositeFieldPath
+      fromFieldPath: metadata.labels[demo.upbound.io/root-namespace]
+      toFieldPath: metadata.labels[demo.upbound.io/root-namespace]
+      policy:
+        fromFieldPath: Optional
   resources:
     - name: compositeSQLInstanceDbSubnetGroup
       base:
@@ -20,8 +48,12 @@ spec:
             description: An excellent formation of subnetworks.
           deletionPolicy: Delete
       patches:
-        - fromFieldPath: spec.parameters.clusterRef.id
-          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
+        - type: PatchSet
+          patchSetName: identifiers
+        - fromFieldPath: spec.subnetIdSelector.matchLabels
+          toFieldPath: spec.forProvider.subnetIdSelector.matchLabels
+          policy:
+            fromFieldPath: Required
     - name: RDSInstanceSmall
       base:
         apiVersion: rds.aws.upbound.io/v1beta1
@@ -32,34 +64,46 @@ spec:
             dbSubnetGroupNameSelector:
               matchControllerRef: true
             instanceClass: db.t3.micro
-            username: masteruser
             skipFinalSnapshot: true
             publiclyAccessible: false
-            dbName: upbound # create custom database within the instance by default
+            username: masteruser
+            autoGeneratePassword: true
+            passwordSecretRef:
+              key: password
+              name: example-dbinstance
+              namespace: upbound-system
           deletionPolicy: Delete
       patches:
-        - fromFieldPath: "metadata.uid"
-          toFieldPath: "spec.writeConnectionSecretToRef.name"
+        - type: PatchSet
+          patchSetName: identifiers
+        - fromFieldPath: metadata.uid
+          toFieldPath: spec.writeConnectionSecretToRef.name
           transforms:
             - type: string
               string:
                 fmt: "%s-sql" #change
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.writeConnectionSecretToRef.namespace
-        - fromFieldPath: spec.parameters.engine
+        - fromFieldPath: spec.engine
           toFieldPath: spec.forProvider.engine
-        - fromFieldPath: spec.parameters.engineVersion
+        - fromFieldPath: spec.engineVersion
           toFieldPath: spec.forProvider.engineVersion
-        - fromFieldPath: spec.parameters.storageGB
+        - fromFieldPath: spec.storageGB
           toFieldPath: spec.forProvider.allocatedStorage
-        - fromFieldPath: spec.parameters.clusterRef.id
-          toFieldPath: spec.forProvider.vpcSecurityGroupIdSelector.matchLabels[networks.aws.platformref.upbound.io/network-id]
-        - fromFieldPath: spec.parameters.passwordSecretRef.namespace
+        - fromFieldPath: spec.securityGroupIdSelector.matchLabels
+          toFieldPath: spec.forProvider.vpcSecurityGroupIdSelector.matchLabels
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: spec.passwordSecretRef.namespace
           toFieldPath: spec.forProvider.passwordSecretRef.namespace
-        - fromFieldPath: spec.parameters.passwordSecretRef.name
+        - fromFieldPath: spec.passwordSecretRef.name
           toFieldPath: spec.forProvider.passwordSecretRef.name
-        - fromFieldPath: spec.parameters.passwordSecretRef.key
+        - fromFieldPath: spec.passwordSecretRef.key
           toFieldPath: spec.forProvider.passwordSecretRef.key
+        - fromFieldPath: spec.initialDBName
+          toFieldPath: spec.forProvider.dbName
+          policy:
+            fromFieldPath: Optional
       connectionDetails:
         - fromFieldPath: "status.atProvider.endpoint"
           name: endpoint

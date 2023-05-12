@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xsqlinstances.aws.platformref.upbound.io
+  name: xsqlinstances.demo.upbound.io
 spec:
   claimNames:
     kind: SQLInstance
@@ -11,7 +11,7 @@ spec:
     - password
     - endpoint
     - host
-  group: aws.platformref.upbound.io
+  group: demo.upbound.io
   names:
     kind: XSQLInstance
     plural: xsqlinstances
@@ -26,48 +26,40 @@ spec:
           spec:
             type: object
             properties:
-              parameters:
+              engine:
+                type: string
+                description: This RDS Instance engine, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
+                enum:
+                - postgres
+                - mariadb
+              engineVersion:
+                type: string
+                description: This RDS Instance engine version, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
+              storageGB:
+                type: integer
+              initialDBName:
+                type: string
+              subnetIdSelector:
                 type: object
+                description: A selector to select Subnet resources.
                 properties:
-                  engine:
-                    type: string
-                    description: This RDS Instance engine, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
-                    enum:
-                    - postgres
-                    - mariadb
-                  engineVersion:
-                    type: string
-                    description: This RDS Instance engine version, see https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html for possible values.
-                  storageGB:
-                    type: integer
-                  passwordSecretRef:
+                  matchLabels:
                     type: object
-                    description: "A reference to the Secret object containing database password"
-                    properties:
-                      namespace:
-                        type: string
-                      name:
-                        type: string
-                      key:
-                        type: string
-                    required:
-                    - namespace
-                    - name
-                    - key
-                  clusterRef:
-                    type: object
-                    description: "A reference to the Network object that this database should be connected to."
-                    properties:
-                      id:
-                        type: string
-                        description: ID of the Network object this ref points to.
-                    required:
-                    - id
+                    description: A set of labels to select Subnet for the database instance.
                 required:
-                  - engine
-                  - engineVersion
-                  - storageGB
-                  - clusterRef
-                  - passwordSecretRef
+                - matchLabels
+              securityGroupIdSelector:
+                type: object
+                description: A selector to select SecurityGroup resources.
+                properties:
+                  matchLabels:
+                    type: object
+                    description: A set of labels to select SecurityGroup for the database instance.
+                required:
+                - matchLabels
             required:
-              - parameters
+              - engine
+              - engineVersion
+              - storageGB
+              - subnetIdSelector
+              - securityGroupIdSelector
