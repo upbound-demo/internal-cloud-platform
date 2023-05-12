@@ -35,7 +35,7 @@ spec:
   dependsOn:
   - name: staging-system
   interval: 1m0s
-  path: ./runtime/staging
+  path: ./runtime/system-staging
   prune: false
   sourceRef:
     kind: GitRepository

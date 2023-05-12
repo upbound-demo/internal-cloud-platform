@@ -30,13 +30,11 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: app-staging-runtime
+  name: app-staging-apis
   namespace: flux-system
 spec:
-  dependsOn:
-  - name: app-staging-system
   interval: 1m0s
-  path: ./runtime/production/apis-production/app-staging
+  path: ./platform/apis/production
   prune: false
   sourceRef:
     kind: GitRepository
@@ -49,11 +47,13 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: app-staging-apis
+  name: app-staging-runtime
   namespace: flux-system
 spec:
+  dependsOn:
+  - name: app-staging-system
   interval: 1m0s
-  path: ./platform/apis/production
+  path: ./runtime/system-production/apis-production/app-staging
   prune: false
   sourceRef:
     kind: GitRepository

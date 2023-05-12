@@ -1,19 +1,19 @@
 apiVersion: mxp.upbound.io/v1alpha1
 kind: ControlPlane
 metadata:
-  name: prod-dev
+  name: apis-dev
   labels:
     system: prod
     api: dev
 spec:
   writeConnectionSecretToRef:
-    name: kubeconfig-prod-dev
+    name: kubeconfig-apis-dev
     namespace: flux-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: prod-dev-system
+  name: apis-dev-system
   namespace: flux-system
 spec:
   interval: 1m0s
@@ -24,32 +24,13 @@ spec:
     name: flux-system
   kubeConfig:
     secretRef:
-      name: kubeconfig-prod-dev
+      name: kubeconfig-apis-dev
       key: kubeconfig
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: prod-dev-runtime
-  namespace: flux-system
-spec:
-  dependsOn:
-  - name: prod-dev-system
-  interval: 1m0s
-  path: ./runtime/production/apis-dev
-  prune: false
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  kubeConfig:
-    secretRef:
-      name: kubeconfig-prod-dev
-      key: kubeconfig
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: prod-dev-apis
+  name: apis-dev-apis
   namespace: flux-system
 spec:
   interval: 1m0s
@@ -60,13 +41,32 @@ spec:
     name: flux-system
   kubeConfig:
     secretRef:
-      name: kubeconfig-prod-dev
+      name: kubeconfig-apis-dev
+      key: kubeconfig
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apis-dev-runtime
+  namespace: flux-system
+spec:
+  dependsOn:
+  - name: apis-dev-system
+  interval: 1m0s
+  path: ./runtime/system-production/apis-dev
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  kubeConfig:
+    secretRef:
+      name: kubeconfig-apis-dev
       key: kubeconfig
 ---
 apiVersion: iam.aws.upbound.io/v1beta1
 kind: Role
 metadata:
-  name: icp-prod-apis-dev-control-plane
+  name: icp-apis-dev-control-plane
 spec:
   forProvider:
     assumeRolePolicy: |-
@@ -92,9 +92,9 @@ spec:
 apiVersion: iam.aws.upbound.io/v1beta1
 kind: RolePolicyAttachment
 metadata:
-  name: icp-prod-apis-dev-control-plane
+  name: icp-apis-dev-control-plane
 spec:
   forProvider:
     policyArn: arn:aws:iam::aws:policy/AdministratorAccess
     roleRef:
-      name: icp-prod-apis-dev-control-plane
+      name: icp-apis-dev-control-plane
