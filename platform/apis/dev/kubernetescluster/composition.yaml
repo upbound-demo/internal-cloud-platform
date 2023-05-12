@@ -148,7 +148,7 @@ spec:
             chart:
               name: flux2
               repository: https://fluxcd-community.github.io/helm-charts
-              version: v2.7.0
+              version: 2.7.0
             namespace: flux-system
       patches:
         - type: PatchSet
