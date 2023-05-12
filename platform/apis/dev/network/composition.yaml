@@ -95,6 +95,8 @@ spec:
           patchSetName: network-name-tag
         - type: ToCompositeFieldPath
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
+          toFieldPath: status.publicSubnetIds[0]
+          fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.subnetIds[0]
     - base:
         apiVersion: ec2.aws.upbound.io/v1beta1
@@ -120,6 +122,8 @@ spec:
         - type: PatchSet
           patchSetName: network-name-tag
         - type: ToCompositeFieldPath
+          fromFieldPath: metadata.annotations[crossplane.io/external-name]
+          toFieldPath: status.publicSubnetIds[1]
           fromFieldPath: metadata.annotations[crossplane.io/external-name]
           toFieldPath: status.subnetIds[1]
     - base:

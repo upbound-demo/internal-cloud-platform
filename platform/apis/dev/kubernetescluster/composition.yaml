@@ -49,6 +49,11 @@ spec:
         - type: PatchSet
           patchSetName: identifiers
         - type: ToCompositeFieldPath
+          fromFieldPath: status.publicSubnetIds
+          toFieldPath: status.publicSubnetIds
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
           fromFieldPath: status.subnetIds
           toFieldPath: status.subnetIds
           policy:
