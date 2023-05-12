@@ -67,6 +67,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: identifiers
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.nameForProviderConfigs
         - fromFieldPath: metadata.uid
           toFieldPath: spec.writeConnectionSecretToRef.name
           transforms:
@@ -137,3 +139,8 @@ spec:
           toFieldPath: spec.forProvider.values.mcp.token
           policy:
             fromFieldPath: Required
+  functions:
+    - name: register-team-repos
+      type: Container
+      container:
+        image: ghcr.io/upbound-demo/xfn-fluxcd-per-team:v0.1.0

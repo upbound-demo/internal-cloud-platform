@@ -142,8 +142,10 @@ spec:
               key: kubeconfig
       name: providerConfig-helm
       patches:
-        - fromFieldPath: metadata.name
+        - fromFieldPath: spec.nameForProviderConfigs
           toFieldPath: metadata.name
+          policy:
+            fromFieldPath: Required
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.credentials.secretRef.namespace
         # This ProviderConfig uses the above EKS cluster's connection secret as
@@ -166,8 +168,10 @@ spec:
               key: kubeconfig
       name: providerConfig-kubernetes
       patches:
-        - fromFieldPath: metadata.name
+        - fromFieldPath: spec.nameForProviderConfigs
           toFieldPath: metadata.name
+          policy:
+            fromFieldPath: Required
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.credentials.secretRef.namespace
         # This ProviderConfig uses the above EKS cluster's connection secret as
