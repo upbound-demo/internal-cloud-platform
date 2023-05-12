@@ -269,9 +269,6 @@ spec:
               matchControllerRef: true
               matchLabels:
                 role: nodegroup
-            subnetIdSelector:
-              matchLabels:
-                access: public
             scalingConfig:
               - minSize: 1
                 maxSize: 100
@@ -294,7 +291,7 @@ spec:
                 small: t3.small
                 medium: t3.medium
                 large: t3.large
-        - fromFieldPath: spec.subnetIds
+        - fromFieldPath: spec.publicSubnetIds
           toFieldPath: spec.forProvider.subnetIds
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1

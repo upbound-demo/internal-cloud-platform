@@ -81,6 +81,10 @@ spec:
           toFieldPath: spec.nodes.count
         - fromFieldPath: spec.nodes.size
           toFieldPath: spec.nodes.size
+        - fromFieldPath: status.publicSubnetIds
+          toFieldPath: spec.publicSubnetIds
+          policy:
+            fromFieldPath: Required
         - fromFieldPath: status.subnetIds
           toFieldPath: spec.subnetIds
           policy:

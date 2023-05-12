@@ -71,6 +71,10 @@ spec:
           status:
             type: object
             properties:
+              publicSubnetIds:
+                type: array
+                items:
+                  type: string
               subnetIds:
                 type: array
                 items:

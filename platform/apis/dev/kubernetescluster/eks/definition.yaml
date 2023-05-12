@@ -24,6 +24,10 @@ spec:
               nameForProviderConfigs:
                 type: string
                 description: The name for the ProviderConfig objects to be generated.
+              publicSubnetIds:
+                type: array
+                items:
+                  type: string
               subnetIds:
                 type: array
                 items:
@@ -52,6 +56,7 @@ spec:
             required:
             - nodes
             - subnetIds
+            - publicSubnetIds
             - securityGroupIds
             - nameForProviderConfigs
           status:
