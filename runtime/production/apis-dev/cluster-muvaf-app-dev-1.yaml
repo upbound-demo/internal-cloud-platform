@@ -1,21 +1,21 @@
-# apiVersion: demo.upbound.io/v1alpha1
-# kind: KubernetesCluster
-# metadata:
-#   name: muvaf-app-dev-2
-#   namespace: default
-# spec:
-#   teams:
-#   - name: team-blue
-#     repository: "https://github.com/upbound-demo/team-blue"
-#     environments:
-#     - name: dev
-#       path: ./dev
-#     - name: staging
-#       path: ./staging
-#     - name: production
-#       path: ./production
-#   nodes:
-#     count: 3
-#     size: small
-#   writeConnectionSecretToRef:
-#     name: kubeconfig-muvaf-app-dev-2
+apiVersion: demo.upbound.io/v1alpha1
+kind: KubernetesCluster
+metadata:
+  name: muvaf-app-dev-3
+  namespace: default
+spec:
+  teams:
+  - name: team-blue
+    repository: "https://github.com/upbound-demo/team-blue"
+    environments:
+    - name: dev
+      path: ./dev
+    - name: staging
+      path: ./staging
+    - name: production
+      path: ./production
+  nodes:
+    count: 3
+    size: small
+  writeConnectionSecretToRef:
+    name: kubeconfig-muvaf-app-dev-3
