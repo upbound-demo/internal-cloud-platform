@@ -168,4 +168,4 @@ spec:
     - name: register-team-repos
       type: Container
       container:
-        image: ghcr.io/upbound-demo/xfn-fluxcd-per-team:v0.1.4
+        image: ghcr.io/upbound-demo/xfn-fluxcd-per-team:v0.1.5
