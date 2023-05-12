@@ -1,0 +1,30 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: team-blue
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  ref:
+    branch: main
+  secretRef:
+    name: flux-system
+  url: ssh://git@github.com/upbound-demo/team-blue
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: team-blue-muvaf-app-dev-1
+  namespace: flux-system
+spec:
+  interval: 1m0s
+  path: ./dev
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: team-blue
+  kubeConfig:
+    secretRef:
+      name: kubeconfig-muvaf-app-dev-1
+      key: kubeconfig

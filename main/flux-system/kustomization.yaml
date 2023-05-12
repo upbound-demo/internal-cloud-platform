@@ -4,7 +4,6 @@ resources:
 - gotk-components.yaml
 - gotk-sync.yaml
 - weave-gitops-dashboard.yaml
-- gitrepo-team-blue.yaml
 patches:
   - patch: |
       # Allow insecure TLS since our public TLS is self-signed.

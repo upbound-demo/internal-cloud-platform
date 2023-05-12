@@ -1,11 +1,11 @@
 apiVersion: demo.upbound.io/v1alpha1
 kind: KubernetesCluster
 metadata:
-  name: icp-demo-muvaf
+  name: muvaf-app-dev-1
   namespace: default
 spec:
   nodes:
     count: 3
     size: small
   writeConnectionSecretToRef:
-    name: kubeconfig-icp-demo-muvaf
+    name: kubeconfig-muvaf-app-dev-1
