@@ -7,6 +7,13 @@ spec:
   teams:
   - name: team-blue
     repository: "https://github.com/upbound-demo/team-blue"
+    environments:
+    - name: dev
+      path: ./dev
+    - name: staging
+      path: ./staging
+    - name: production
+      path: ./production
   nodes:
     count: 3
     size: small
