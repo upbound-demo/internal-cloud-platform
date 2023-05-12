@@ -139,6 +139,22 @@ spec:
           toFieldPath: spec.forProvider.values.mcp.token
           policy:
             fromFieldPath: Required
+    - name: fluxRelease
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        spec:
+          forProvider:
+            chart:
+              name: flux2
+              repository: https://fluxcd-community.github.io/helm-charts
+              version: v2.7.0
+            namespace: flux-system
+      patches:
+        - type: PatchSet
+          patchSetName: identifiers
+        - fromFieldPath: metadata.name
+          toFieldPath: spec.providerConfigRef.name
   functions:
     - name: register-team-repos
       type: Container
