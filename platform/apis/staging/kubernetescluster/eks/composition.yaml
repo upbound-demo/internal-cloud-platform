@@ -28,13 +28,13 @@ spec:
   - name: cluster-name-label
     patches:
     - type: FromCompositeFieldPath
-      fromFieldPath: metadata.labels[demo.upbound.io/cluster-name]
-      toFieldPath: metadata.labels[demo.upbound.io/cluster-name]
+      fromFieldPath: metadata.name
+      toFieldPath: metadata.labels[demo.upbound.io/xeks-name]
   - name: cluster-name-tag
     patches:
     - type: FromCompositeFieldPath
-      fromFieldPath: metadata.annotations[demo.upbound.io/cluster-name]
-      toFieldPath: spec.forProvider.tags.cluster-name
+      fromFieldPath: metadata.name
+      toFieldPath: spec.forProvider.tags.xeks-name
   resources:
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1
@@ -140,10 +140,38 @@ spec:
             source: Secret
             secretRef:
               key: kubeconfig
-      name: providerConfig
+      name: providerConfig-helm
       patches:
-        - fromFieldPath: metadata.labels[demo.upbound.io/cluster-name]
+        - fromFieldPath: spec.nameForProviderConfigs
           toFieldPath: metadata.name
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: spec.writeConnectionSecretToRef.namespace
+          toFieldPath: spec.credentials.secretRef.namespace
+        # This ProviderConfig uses the above EKS cluster's connection secret as
+        # its credentials secret.
+        - fromFieldPath: metadata.uid
+          toFieldPath: spec.credentials.secretRef.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-ekscluster"
+      readinessChecks:
+        - type: None
+    - base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: ProviderConfig
+        spec:
+          credentials:
+            source: Secret
+            secretRef:
+              key: kubeconfig
+      name: providerConfig-kubernetes
+      patches:
+        - fromFieldPath: spec.nameForProviderConfigs
+          toFieldPath: metadata.name
+          policy:
+            fromFieldPath: Required
         - fromFieldPath: spec.writeConnectionSecretToRef.namespace
           toFieldPath: spec.credentials.secretRef.namespace
         # This ProviderConfig uses the above EKS cluster's connection secret as
@@ -241,9 +269,6 @@ spec:
               matchControllerRef: true
               matchLabels:
                 role: nodegroup
-            subnetIdSelector:
-              matchLabels:
-                access: public
             scalingConfig:
               - minSize: 1
                 maxSize: 100
@@ -266,7 +291,7 @@ spec:
                 small: t3.small
                 medium: t3.medium
                 large: t3.large
-        - fromFieldPath: spec.subnetIds
+        - fromFieldPath: spec.publicSubnetIds
           toFieldPath: spec.forProvider.subnetIds
     - base:
         apiVersion: iam.aws.upbound.io/v1beta1

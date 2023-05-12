@@ -24,6 +24,33 @@ spec:
             type: object
             description: Cluster configuration parameters.
             properties:
+              teams:
+                type: array
+                description: A list of teams that will deploy applications to this cluster.
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    repository:
+                      type: string
+                    environments:
+                      type: array
+                      description: Environments is a list of environments that should be deployed for this team.
+                      default:
+                        - name: dev
+                          path: ./dev
+                        - name: staging
+                          path: ./staging
+                        - name: production
+                          path: ./production
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          path:
+                            type: string
               nodes:
                 type: object
                 description: Cluster node configuration parameters.
@@ -44,6 +71,10 @@ spec:
           status:
             type: object
             properties:
+              publicSubnetIds:
+                type: array
+                items:
+                  type: string
               subnetIds:
                 type: array
                 items:
