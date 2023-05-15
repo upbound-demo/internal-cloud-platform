@@ -33,3 +33,10 @@ spec:
   package: xpkg.upbound.io/upbound-release-candidates/provider-aws-ec2:v0.36.0
   controllerConfigRef:
     name: irsa
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: upbound-release-candidates-provider-aws-config
+spec:
+  package: xpkg.upbound.io/upbound-release-candidates/provider-aws-config:v0.36.0
