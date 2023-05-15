@@ -18,7 +18,7 @@ metadata:
 spec:
   interval: 1m0s
   path: ./platform/system/production
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -35,7 +35,7 @@ metadata:
 spec:
   interval: 1m0s
   path: ./platform/apis/dev
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -54,7 +54,7 @@ spec:
   - name: apis-dev-system
   interval: 1m0s
   path: ./runtime/system-production/apis-dev
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
