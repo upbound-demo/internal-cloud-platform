@@ -1,16 +1,32 @@
 # Internal Cloud Platform
 
 This repository contains the manifests to build your own internal cloud platform
-with Upbound Managed Crossplane (MXP).
+on top of Upbound Self-Hosted Environments. Your cloud platform will be powered
+by Managed Crossplane (MXP) control planes.
 
 ## Usage
 
+### Personas
+
+The repo is a reference implementation for an organization that is built around
+having a **platform team** and **app teams**. **Platform teams** are responsible
+for creating the MXP instances, crafting the set of `XRDs` and `compositions` to be
+installed on these MXPs, and operating Crossplane. **App teams** are concerned only
+with their applications and consuming the APIs created by the Platform team.
+
+### Prerequisites
+
+The usage instructions in this repo assume you have already bootstrapped an Upbound
+Self-Hosted Environment in your own Kubernetes Cluster using the `up` CLI. If you
+have not done this, consult instructions from the Upbound team before continuing.
+This repo also assumes Flux has been provisioned as the CI/CD engine to power "GitOps".
+
 ### Deploy an Application
 
-In your team's repository (an example
+In your app team's repository (an example
 [here](https://github.com/upbound-demo/team-blue)), you can create Kubernetes
 resources and Crossplane claims together. The following is an example where
-Wordpress is deployed on the team's cluster together with an `SQLInstance`
+Wordpress is deployed on the app team's cluster together with an `SQLInstance`
 object whose API is defined by the platform team in this repository.
 
 ```yaml
@@ -69,11 +85,11 @@ spec:
           name: wordpress
 ```
 
-### Register a Team Repository
+### Register an App Team Repository
 
-You can register your team's repository to a `KubernetesCluster` so that the
+You can register your app team's repository to a `KubernetesCluster` so that the
 team's manifests are continuously synced. The following is an example where
-`team-blue` is registered for sync to `app-dev-1` cluster.
+`team-blue` is registered to sync their application to `app-dev-1` cluster.
 
 ```yaml
 apiVersion: demo.upbound.io/v1alpha1
@@ -99,7 +115,7 @@ spec:
     name: kubeconfig-app-dev-1
 ```
 
-In your team repository, you can create manifests consuming the APIs defined in
+In your app team repository, you can create manifests consuming the APIs defined in
 the control plane that the cluster is registered. For example, if the
 `KubernetesCluster` above resides in
 [`runtime/system-production/apis-production/app-dev`](./runtime/system-production/apis-production/app-dev/),
@@ -108,8 +124,12 @@ you can find the claim APIs offered by going to
 
 ### Develop a New API
 
-If you'd like to offer a new API to your developers, it needs to go through 3
-stages. First, you need to add it to `platform/apis/dev` folder that is synced
+This reference implementation assumes a platform teams follow standard software
+development practices as part of building new APIs in Crossplane. This
+implementation is set up to have the platform team promote their API definitions
+through 3 stages.
+
+First, you need to add the APIs to `platform/apis/dev` folder that is synced
 to the [`prod-dev` control plane](./main/control-planes/system-production/apis-dev).
 
 Once you are happy with the changes, you can promote it to staging whose APIs
@@ -123,15 +143,16 @@ production, **it will be deployed to all production control planes**, like
 
 ### Install a New Provider
 
-Providers are system components. So they need to go through dev, staging and
-production stages under `platform/system` folder. Once your `Provider` manifests
-make it to the production stage, they will be deployed to **all production control planes**.
+Providers are system components. This implementation assumes they need to go through dev,
+staging and production stages under `platform/system` folder. Once your `Provider`
+manifests make it to the production stage, they will be deployed to **all production
+control planes**.
 
 ### Create a New Control Plane
 
-Control plane manifests are stored in `main/control-planes`. If you'd like to
-add a production control plane, you can add necessary manifests to
-`main/control-planes/system-production/apis-production` folder.
+This implementation is structured such that Control plane manifests are stored in
+`main/control-planes`. If you'd like to add a production control plane, you can
+add necessary manifests to `main/control-planes/system-production/apis-production` folder.
 
 A control plane configuration consists of the following manifests:
 * `ControlPlane`: The definition of an MXP instance.
