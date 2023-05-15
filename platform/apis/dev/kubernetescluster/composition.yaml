@@ -103,6 +103,10 @@ spec:
         apiVersion: helm.crossplane.io/v1beta1
         kind: Release
         spec:
+        # The access to cluster is gone right when its deletion is
+        # scheduled, hence Release gets stuck but there is no need to delete this
+        # in an already deleting cluster anyway.
+          deletionPolicy: Orphan
           forProvider:
             chart:
               name: mcp-connector
@@ -153,6 +157,10 @@ spec:
         apiVersion: helm.crossplane.io/v1beta1
         kind: Release
         spec:
+        # The access to cluster is gone right when its deletion is
+        # scheduled, hence Release gets stuck but there is no need to delete this
+        # in an already deleting cluster anyway.
+          deletionPolicy: Orphan
           forProvider:
             chart:
               name: flux2
