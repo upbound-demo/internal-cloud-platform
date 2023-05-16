@@ -121,9 +121,6 @@ spec:
                 namespace: namespace-in-controlplane
                 token: token-to-access-controlplane
                 insecureSkipTLSVerify: true
-              image:
-                repository: docker.io/muvaf/mcp-connector
-                tag: v0.3.2-rc-1
       patches:
         - type: PatchSet
           patchSetName: identifiers
