@@ -9,7 +9,7 @@ spec:
     repository: "https://github.com/upbound-demo/team-blue"
     environments:
     - name: dev
-      path: ./dev
+      path: ./cluster/dev
   nodes:
     count: 3
     size: small
